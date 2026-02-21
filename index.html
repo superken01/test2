@@ -4,8 +4,121 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Binance 即時價格圖</title>
-  <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f0f6fc;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: #8b949e;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #30363d;
+  transition: background 0.3s;
+}
+
+.dot.connected {
+  background: #3fb950;
+  box-shadow: 0 0 6px #3fb95080;
+  animation: pulse 2s infinite;
+}
+
+.dot.error {
+  background: #f85149;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.price-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.price-item {
+  flex: 1;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.price-item .label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8b949e;
+  margin-bottom: 6px;
+}
+
+.price-item .value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-item.bid .value { color: #3fb950; }
+.price-item.ask .value { color: #f85149; }
+.price-item.spread .value { color: #d29922; }
+
+.chart-wrap {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .price-bar {
+    flex-direction: column;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+  }
+}
+  </style>
 </head>
 <body>
   <div class="container">
