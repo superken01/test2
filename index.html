@@ -3,47 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>靜態網頁</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Binance 即時價格圖</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f0f6fc;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: #8b949e;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #30363d;
+  transition: background 0.3s;
+}
+
+.dot.connected {
+  background: #3fb950;
+  box-shadow: 0 0 6px #3fb95080;
+  animation: pulse 2s infinite;
+}
+
+.dot.error {
+  background: #f85149;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.price-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.price-item {
+  flex: 1;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.price-item .label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8b949e;
+  margin-bottom: 6px;
+}
+
+.price-item .value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-item.bid .value { color: #3fb950; }
+.price-item.ask .value { color: #f85149; }
+.price-item.spread .value { color: #d29922; }
+
+.chart-wrap {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .price-bar {
+    flex-direction: column;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+  }
+}
+  </style>
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="logo">My Site</div>
-      <ul class="nav-links">
-        <li><a href="#home">首頁</a></li>
-        <li><a href="#about">關於</a></li>
-        <li><a href="#contact">聯絡</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="container">
+    <div class="header">
+      <h1>BTC/USDT 即時價格</h1>
+      <div class="status">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">連線中...</span>
+      </div>
+    </div>
 
-  <main>
-    <section id="home" class="hero">
-      <h1>歡迎來到我的網站</h1>
-      <p>這是一個靜態網頁專案，使用 HTML、CSS 和 JavaScript 構建。</p>
-      <a href="#about" class="btn">了解更多</a>
-    </section>
+    <div class="price-bar">
+      <div class="price-item bid">
+        <span class="label">Best Bid</span>
+        <span class="value" id="bid-price">—</span>
+      </div>
+      <div class="price-item ask">
+        <span class="label">Best Ask</span>
+        <span class="value" id="ask-price">—</span>
+      </div>
+      <div class="price-item spread">
+        <span class="label">Spread</span>
+        <span class="value" id="spread">—</span>
+      </div>
+    </div>
 
-    <section id="about" class="about">
-      <h2>關於我們</h2>
-      <p>這裡是關於頁面的介紹內容。</p>
-    </section>
-
-    <section id="contact" class="contact">
-      <h2>聯絡我們</h2>
-      <form id="contact-form">
-        <input type="text" placeholder="您的姓名" required />
-        <input type="email" placeholder="電子郵件" required />
-        <textarea placeholder="訊息內容" rows="5" required></textarea>
-        <button type="submit" class="btn">送出</button>
-      </form>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026 My Site. All rights reserved.</p>
-  </footer>
+    <div class="chart-wrap">
+      <canvas id="priceChart"></canvas>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
