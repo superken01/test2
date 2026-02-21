@@ -3,47 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>靜態網頁</title>
+  <title>Binance 即時價格圖</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="logo">My Site</div>
-      <ul class="nav-links">
-        <li><a href="#home">首頁</a></li>
-        <li><a href="#about">關於</a></li>
-        <li><a href="#contact">聯絡</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="container">
+    <div class="header">
+      <h1>BTC/USDT 即時價格</h1>
+      <div class="status">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">連線中...</span>
+      </div>
+    </div>
 
-  <main>
-    <section id="home" class="hero">
-      <h1>歡迎來到我的網站</h1>
-      <p>這是一個靜態網頁專案，使用 HTML、CSS 和 JavaScript 構建。</p>
-      <a href="#about" class="btn">了解更多</a>
-    </section>
+    <div class="price-bar">
+      <div class="price-item bid">
+        <span class="label">Best Bid</span>
+        <span class="value" id="bid-price">—</span>
+      </div>
+      <div class="price-item ask">
+        <span class="label">Best Ask</span>
+        <span class="value" id="ask-price">—</span>
+      </div>
+      <div class="price-item spread">
+        <span class="label">Spread</span>
+        <span class="value" id="spread">—</span>
+      </div>
+    </div>
 
-    <section id="about" class="about">
-      <h2>關於我們</h2>
-      <p>這裡是關於頁面的介紹內容。</p>
-    </section>
-
-    <section id="contact" class="contact">
-      <h2>聯絡我們</h2>
-      <form id="contact-form">
-        <input type="text" placeholder="您的姓名" required />
-        <input type="email" placeholder="電子郵件" required />
-        <textarea placeholder="訊息內容" rows="5" required></textarea>
-        <button type="submit" class="btn">送出</button>
-      </form>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026 My Site. All rights reserved.</p>
-  </footer>
+    <div class="chart-wrap">
+      <canvas id="priceChart"></canvas>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
