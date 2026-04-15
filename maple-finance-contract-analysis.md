@@ -336,7 +336,54 @@ PoolManager  MapleLoan  Withdrawal  Liquidator
 
 ---
 
-## 9. 資料來源
+## 9. V1 vs V2 架構差異
+
+| 面向 | V1 | V2 |
+|---|---|---|
+| **LP 代幣** | FDT (ERC-2222) | ERC-4626 金庫標準 |
+| **Pool-Loan 橋接** | DebtLocker（每個 pool-loan 配對一個） | LoanManager（每個貸款類型每個池一個） |
+| **託管合約** | FundingLocker、CollateralLocker、StakeLocker | 已消除——邏輯整合到核心合約中 |
+| **第一損失資本** | BPTs（MPL/USDC）由質押者存入 StakeLocker | 與池同資產的資本，由 Pool Delegate 存入 PoolDelegateCover |
+| **貸款類型** | 僅固定期限 | 固定期限 + 開放期限 |
+| **提款方式** | 直接提款（FDT 上有退出防禦機制） | 通過 WithdrawalManager 管理（週期性或佇列式） |
+| **代理模式** | 工廠代理 | 工廠代理 + NonTransparentProxy（用於單例） |
+| **費用結構** | 設立費 + 持續費用 | 四層費用系統（管理費、服務費、發起費、關閉費）+ Cover 執行機制 |
+| **價值累積** | 每池單一機制 | 多個 LoanManagers 允許並行價值累積機制 |
+| **再融資** | 通過 DebtLocker | MapleLoan 原生支持；就地修改條款無需償還本金 |
+| **權限控制** | 基本白名單 | 基於 Bitmap 的 PoolPermissionManager + 自動 KYC 傳播 |
+| **閒置資本** | 無策略部署 | 策略合約（Aave、Sky）用於閒置資本收益 |
+| **管理角色** | Governor、Global Admin | Governor、OperationalAdmin、SecurityAdmin（更細粒度） |
+| **建構系統** | dapptools | Foundry |
+
+### V2 設計理念
+
+- **簡潔性**: Pool 合約最小化（僅 ERC-4626）；複雜度推到 PoolManager
+- **模組化**: 每池多個 LoanManagers 使新貸款類型無需池遷移
+- **資本效率**: 無需還款的再融資；閒置資本策略
+- **激勵對齊**: Pool Delegate 的第一損失資本與池使用相同資產（非 BPTs），創造直接財務對齊
+- **靈活性**: 兩種提款機制讓 Pool Delegate 選擇最適合其池流動性概況的方式
+
+---
+
+## 10. 已知主網部署地址
+
+| 合約 | 地址 |
+|---|---|
+| **MPL Token** | `0x33349B282065b0284d756F0577FB39c158F935e6` |
+| **MapleGlobals** | `0xE463cD473EcC1d1A4ecF20b62624D84DD20a8339` |
+| **Fee Manager** | `0xFeACa6A5703E6F9DE0ebE0975C93AE34c00523F2` |
+| **Open-Term Loan Manager Factory** | `0x90b14505221a24039A2D11Ad5862339db97Cc160` |
+| **Fixed-Term Loan Factory V1** | `0x36a7350309B2Eb30F3B908aB0154851B5ED81db0` |
+| **Fixed-Term Loan Factory V2** | `0xeA067DB5B32CE036Ee5D8607DBB02f544768dBC6` |
+| **Sky Strategy Factory** | `0x27327E08de810c687687F95bfCE92088089b56dB` |
+| **Aave Strategy Factory** | `0x01ab799f77F9a9f4dd0D2b6E7C83DCF3F48D5650` |
+
+> 完整地址註冊表：https://github.com/maple-labs/protocol-registry  
+> 部署鏈：Ethereum Mainnet、Base L2、Sepolia Testnet
+
+---
+
+## 11. 資料來源
 
 - [Maple Finance Smart Contract Architecture (docs.maple.finance)](https://docs.maple.finance/technical-resources/protocol-overview/smart-contract-architecture)
 - [maple-labs GitHub Organization](https://github.com/maple-labs)
@@ -351,3 +398,13 @@ PoolManager  MapleLoan  Withdrawal  Liquidator
 - [withdrawal-manager-queue Repository](https://github.com/maple-labs/withdrawal-manager-queue)
 - [liquidations Repository](https://github.com/maple-labs/liquidations)
 - [pool-permission-manager Repository](https://github.com/maple-labs/pool-permission-manager)
+- [proxy-factory Repository](https://github.com/maple-labs/proxy-factory)
+- [non-transparent-proxy Repository](https://github.com/maple-labs/non-transparent-proxy)
+- [xMPL Repository](https://github.com/maple-labs/xMPL)
+- [protocol-registry Repository](https://github.com/maple-labs/protocol-registry)
+- [Loans Documentation](https://docs.maple.finance/technical-resources/loans/loans)
+- [Open Term Loan Manager Documentation](https://docs.maple.finance/technical-resources/strategies/open-term-loan-manager)
+- [Withdrawal Process Documentation](https://docs.maple.finance/maple-for-lenders/withdrawal-process)
+- [Defaults and Impairments Documentation](https://docs.maple.finance/maple-for-lenders/defaults-and-impairments)
+- [External Entry Points Documentation](https://docs.maple.finance/technical-resources/security/external-entry-points)
+- [Smart Contract Addresses](https://docs.maple.finance/technical-resources/protocol-overview/smart-contract-addresses)
